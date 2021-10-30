@@ -24,4 +24,8 @@ export class AppService {
       ...userData,
     });
   }
+
+  DetailPage(id: number) {
+    return data.filter((i) => i.id == id);
+  }
 }

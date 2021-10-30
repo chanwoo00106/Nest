@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 
 export interface Idata {
@@ -19,5 +19,11 @@ export class AppController {
   @Post()
   postData(@Body() userData: Idata) {
     return this.appService.postData(userData);
+  }
+
+  @Get('/:id')
+  DetailPage(@Param('id') id: number) {
+    console.log(id);
+    return this.appService.DetailPage(id);
   }
 }
