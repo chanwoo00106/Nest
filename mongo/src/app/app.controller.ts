@@ -23,7 +23,6 @@ export class AppController {
 
   @Get('/:id')
   DetailPage(@Param('id') id: number) {
-    console.log(id);
     return this.appService.DetailPage(id);
   }
 }
