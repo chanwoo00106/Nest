@@ -6,25 +6,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppModule = void 0;
+exports.ItemsModule = void 0;
 const common_1 = require("@nestjs/common");
-const mongoose_1 = require("@nestjs/mongoose");
-const items_controller_1 = require("./items/items.controller");
-const items_service_1 = require("./items/items.service");
-const items_module_1 = require("./items/items.module");
-let AppModule = class AppModule {
+const items_controller_1 = require("./items.controller");
+const items_service_1 = require("./items.service");
+let ItemsModule = class ItemsModule {
 };
-AppModule = __decorate([
+ItemsModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            mongoose_1.MongooseModule.forRoot('mongodb://localhost/nest_search', {
-                autoCreate: true,
-            }),
-            items_module_1.ItemsModule,
-        ],
+        imports: [],
         controllers: [items_controller_1.ItemsController],
         providers: [items_service_1.ItemsService],
     })
-], AppModule);
-exports.AppModule = AppModule;
-//# sourceMappingURL=app.module.js.map
+], ItemsModule);
+exports.ItemsModule = ItemsModule;
+//# sourceMappingURL=items.module.js.map
