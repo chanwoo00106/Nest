@@ -20,48 +20,48 @@ let ItemsController = class ItemsController {
     constructor(itemsService) {
         this.itemsService = itemsService;
     }
-    findAll() {
+    async findAll() {
         return this.itemsService.findeAll();
     }
-    findOne(param) {
-        return this.itemsService.findOne(param);
+    async findOne(id) {
+        return this.itemsService.findOne(id);
     }
-    create(createItemDto) {
-        return `Name: ${createItemDto.name}`;
+    async create(createItemDto) {
+        return this.itemsService.create(createItemDto);
     }
-    delete(id) {
-        return `Delete ${id}`;
+    async delete(id) {
+        return this.itemsService.delete(id);
     }
-    update(updateItemDto, id) {
-        return `Update ${id} - ${updateItemDto.name}`;
+    async update(updateItemDto, id) {
+        return this.itemsService.update(id, updateItemDto);
     }
 };
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Array)
+    __metadata("design:returntype", Promise)
 ], ItemsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)()),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Object)
+    __metadata("design:returntype", Promise)
 ], ItemsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_item_dto_1.CreateItemDto]),
-    __metadata("design:returntype", String)
+    __metadata("design:returntype", Promise)
 ], ItemsController.prototype, "create", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ItemsController.prototype, "delete", null);
 __decorate([
     (0, common_1.Put)(':id'),
@@ -69,7 +69,7 @@ __decorate([
     __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_item_dto_1.CreateItemDto, Object]),
-    __metadata("design:returntype", String)
+    __metadata("design:returntype", Promise)
 ], ItemsController.prototype, "update", null);
 ItemsController = __decorate([
     (0, common_1.Controller)('items'),

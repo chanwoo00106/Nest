@@ -1,17 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ItemsController } from './items/items.controller';
-import { ItemsService } from './items/items.service';
 import { ItemsModule } from './items/items.module';
+import config from './config/keys';
 
 @Module({
-  imports: [
-    MongooseModule.forRoot('mongodb://localhost/nest_search', {
-      autoCreate: true,
-    }),
-    ItemsModule,
-  ],
-  controllers: [ItemsController],
-  providers: [ItemsService],
+  imports: [MongooseModule.forRoot(config.mongoURI), ItemsModule],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

@@ -9,21 +9,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const items_controller_1 = require("./items/items.controller");
-const items_service_1 = require("./items/items.service");
 const items_module_1 = require("./items/items.module");
+const keys_1 = require("./config/keys");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            mongoose_1.MongooseModule.forRoot('mongodb://localhost/nest_search', {
-                autoCreate: true,
-            }),
-            items_module_1.ItemsModule,
-        ],
-        controllers: [items_controller_1.ItemsController],
-        providers: [items_service_1.ItemsService],
+        imports: [mongoose_1.MongooseModule.forRoot(keys_1.default.mongoURI), items_module_1.ItemsModule],
+        controllers: [],
+        providers: [],
     })
 ], AppModule);
 exports.AppModule = AppModule;
