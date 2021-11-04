@@ -1,14 +1,6 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { BlogService } from './blog.service';
-import { BlogDTO } from './dto/blog.dto';
+import { BlogDTO, GetIdDto, updateDto } from './dto/blog.dto';
 import { Iblog } from './interfaces/blog.interface';
 
 @Controller('blog')
@@ -24,13 +16,13 @@ export class BlogController {
     return this.blogService.create(data);
   }
 
-  @Put(':id')
-  async update(@Body() data: BlogDTO, @Param('id') id): Promise<Iblog> {
-    return this.blogService.update(id, data);
+  @Put()
+  async update(@Body() data: updateDto): Promise<Iblog> {
+    return this.blogService.update(data);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id): Promise<Iblog> {
-    return this.blogService.remove(id);
+  @Delete()
+  async remove(@Body('id') id: GetIdDto): Promise<Iblog> {
+    return this.blogService.remove(id.id);
   }
 }

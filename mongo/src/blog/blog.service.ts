@@ -17,8 +17,8 @@ export class BlogService {
     return await result.save();
   }
 
-  async update(id: string, data: Iblog): Promise<Iblog> {
-    return await this.data.findByIdAndUpdate(id, data, { new: true });
+  async update(data: Iblog): Promise<Iblog> {
+    return await this.data.findByIdAndUpdate(data.id, data, { new: true });
   }
 
   async remove(id: string): Promise<Iblog> {
