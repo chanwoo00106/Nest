@@ -3,7 +3,7 @@ import { StudentController } from 'src/student/student.controller';
 
 @Module({
   imports: [],
-  controllers: [],
-  providers: [StudentController],
+  controllers: [StudentController],
+  providers: [],
 })
 export class AppModule {}
