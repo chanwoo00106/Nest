@@ -22,7 +22,7 @@ export class BlogController {
   }
 
   @Delete()
-  async remove(@Body('id') id: GetIdDto): Promise<Iblog> {
+  async remove(@Body() id: GetIdDto): Promise<Iblog> {
     return this.blogService.remove(id.id);
   }
 }
