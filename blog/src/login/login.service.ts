@@ -11,7 +11,6 @@ export class LoginService {
   async Login(data: dto.LoginDto) {
     const result = await this.LModel.findOne({ ...data });
     if (!result) return null;
-    console.log(result.id);
     return result._id;
   }
 }
