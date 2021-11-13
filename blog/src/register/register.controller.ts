@@ -9,13 +9,9 @@ export class RegisterController {
 
   @Post()
   async Register(@Body() data: dto.RegisterDto, @Res() res: Response) {
-    console.log('hello');
     const result = await this.Rs.Register(data);
-    console.log(result);
 
-    if (!result) {
-      res.status(HttpStatus.UNAUTHORIZED).send();
-    }
+    if (!result) res.status(HttpStatus.UNAUTHORIZED).send();
     res.status(HttpStatus.CREATED).send();
   }
 }

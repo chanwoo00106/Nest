@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { RegisterController } from './register.controller';
-import { RegisterService } from './register.service';
 import { Login, LoginSchema } from '../schema/login.schema';
 import { MongooseModule } from '@nestjs/mongoose';
+import { LoginController } from './login.controller';
+import { LoginService } from './login.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Login.name, schema: LoginSchema }]),
   ],
-  controllers: [RegisterController],
-  providers: [RegisterService],
+  controllers: [LoginController],
+  providers: [LoginService],
 })
-export class RegisterModule {}
+export class LoginModule {}
