@@ -7,7 +7,8 @@ export class RegisterController {
   constructor(private Rs: RegisterService) {}
 
   @Post()
-  Register(@Body() data: dto.RegisterDto): string {
-    return this.Rs.Register(data);
+  async Register(@Body() data: dto.RegisterDto) {
+    await this.Rs.Register(data);
+    return '';
   }
 }
