@@ -10,8 +10,11 @@ export class RegisterService {
     @InjectModel(Register.name) private RModel: Model<RegisterDocument>,
   ) {}
 
-  Register(data: dto.RegisterDto): Promise<Register> {
-    const result = new this.RModel(data);
-    return result.save();
+  async Register(data: dto.RegisterDto): Promise<Register> {
+    if (!(await this.RModel.findOne({ username: data.username }))) {
+      const result = new this.RModel(data);
+      return result.save();
+    }
+    return null;
   }
 }
