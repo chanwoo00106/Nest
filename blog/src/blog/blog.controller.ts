@@ -8,6 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { BlogService, Iblog } from './blog.service';
+import * as dto from './dto';
 
 @Controller('blog')
 export class BlogController {
@@ -19,22 +20,22 @@ export class BlogController {
   }
 
   @Get('/:id')
-  getOne(@Param('id') id: string): Promise<Iblog> {
+  getOne(@Param('id') id: dto.Id): Promise<Iblog> {
     return this.BService.getOne(id);
   }
 
   @Post()
-  create(@Body() data): Promise<Iblog> {
+  create(@Body() data: dto.Data): Promise<Iblog> {
     return this.BService.create(data);
   }
 
   @Put('/:id')
-  update(@Param('id') id, @Body() data) {
+  update(@Param('id') id: dto.Id, @Body() data: dto.Data) {
     return this.BService.update(id, data);
   }
 
   @Delete('/:id')
-  remove(@Param('id') id) {
+  remove(@Param('id') id: dto.Id) {
     return this.BService.remove(id);
   }
 }
