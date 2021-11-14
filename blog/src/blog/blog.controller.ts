@@ -21,6 +21,7 @@ export class BlogController {
 
   @Get('/:id')
   getOne(@Param('id') id: dto.Id): Promise<Iblog> {
+    console.log(id);
     return this.BService.getOne(id);
   }
 
@@ -30,12 +31,14 @@ export class BlogController {
   }
 
   @Put('/:id')
-  update(@Param('id') id: dto.Id, @Body() data: dto.Data) {
-    return this.BService.update(id, data);
+  async update(@Param('id') id: dto.Id, @Body() data: dto.UpdateData) {
+    await this.BService.update(id, data);
+    return;
   }
 
   @Delete('/:id')
-  remove(@Param('id') id: dto.Id) {
-    return this.BService.remove(id);
+  async remove(@Param('id') id: dto.Id) {
+    await this.BService.remove(id);
+    return;
   }
 }

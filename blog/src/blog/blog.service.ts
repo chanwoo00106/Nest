@@ -27,7 +27,7 @@ export class BlogService {
     return result.save();
   }
 
-  async update(id: dto.Id, data: dto.Data): Promise<Iblog> {
+  async update(id: dto.Id, data: dto.UpdateData): Promise<Iblog> {
     return await this.BModel.findByIdAndUpdate(id, data);
   }
 

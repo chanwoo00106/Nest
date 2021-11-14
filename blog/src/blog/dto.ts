@@ -1,7 +1,6 @@
 import { IsString } from 'class-validator';
 
 export class Id {
-  @IsString()
   id: string;
 }
 
@@ -17,4 +16,15 @@ export class Data {
 
   @IsString()
   user: string;
+}
+
+export class UpdateData {
+  @IsString()
+  title: string;
+
+  @IsString()
+  description: string;
+
+  @IsString()
+  data: string;
 }
