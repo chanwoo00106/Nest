@@ -1,32 +1,40 @@
-import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
-import { BlogService } from './blog.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { BlogService, Iblog } from './blog.service';
 
 @Controller('blog')
 export class BlogController {
   constructor(private readonly BService: BlogService) {}
 
   @Get()
-  getAll() {
-    return '';
+  getAll(): Promise<Iblog[]> {
+    return this.BService.getAll();
   }
 
-  @Get()
-  getOne() {
-    return '';
+  @Get('/:id')
+  getOne(@Param('id') id: string): Promise<Iblog> {
+    return this.BService.getOne(id);
   }
 
   @Post()
-  create() {
-    return '';
+  create(@Body() data): Promise<Iblog> {
+    return this.BService.create(data);
   }
 
-  @Put()
-  Retouch() {
-    return '';
+  @Put('/:id')
+  update(@Param('id') id, @Body() data) {
+    return this.BService.update(id, data);
   }
 
-  @Delete()
-  remove() {
-    return 'Done';
+  @Delete('/:id')
+  remove(@Param('id') id) {
+    return this.BService.remove(id);
   }
 }
