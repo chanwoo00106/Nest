@@ -19,7 +19,11 @@ export class BlogService {
   }
 
   async getOne(id: dto.Id): Promise<Iblog> {
-    return await this.BModel.findById(id);
+    try {
+      return await this.BModel.findById(id);
+    } catch (e) {
+      return null;
+    }
   }
 
   async create(data: dto.Data): Promise<Blog> {
@@ -27,8 +31,14 @@ export class BlogService {
     return result.save();
   }
 
-  async update(id: dto.Id, data: dto.UpdateData): Promise<Iblog> {
-    return await this.BModel.findByIdAndUpdate(id, data);
+  async update(id: dto.Id, data: dto.UpdateData, user: string): Promise<Iblog> {
+    const result = await this.BModel.findOneAndUpdate(
+      { _id: id, user: user },
+      data,
+    );
+
+    if (!result) return null;
+    return result;
   }
 
   async remove(id: dto.Id): Promise<Iblog> {
