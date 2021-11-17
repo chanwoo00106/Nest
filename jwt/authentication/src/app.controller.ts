@@ -1,10 +1,21 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 
 @Controller('api')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private jwtService: JwtService,
+  ) {}
 
   @Post('register')
   async register(
@@ -25,6 +36,7 @@ export class AppController {
   async login(
     @Body('email') email: string,
     @Body('password') password: string,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const user = await this.appService.findOne({ email });
 
@@ -33,6 +45,12 @@ export class AppController {
     if (!(await bcrypt.compare(password, user.password)))
       throw new BadRequestException('not found user');
 
-    return user;
+    const jwt = await this.jwtService.signAsync({ id: user.id });
+
+    res.cookie('jwt', jwt, { httpOnly: true });
+
+    return {
+      message: 'success',
+    };
   }
 }
