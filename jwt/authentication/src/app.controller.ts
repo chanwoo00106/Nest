@@ -2,13 +2,16 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Post,
+  Req,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('api')
 export class AppController {
@@ -25,11 +28,15 @@ export class AppController {
   ) {
     const hash = await bcrypt.hash(password, 10);
 
-    return this.appService.create({
+    const user = await this.appService.create({
       name,
       email,
       password: hash,
     });
+
+    delete user.password;
+
+    return user;
   }
 
   @Post('login')
@@ -48,6 +55,34 @@ export class AppController {
     const jwt = await this.jwtService.signAsync({ id: user.id });
 
     res.cookie('jwt', jwt, { httpOnly: true });
+
+    return {
+      message: 'success',
+    };
+  }
+
+  @Get('user')
+  async user(@Req() req: Request) {
+    try {
+      const cookie = req.cookies['jwt'];
+
+      const data = await this.jwtService.verifyAsync(cookie);
+
+      if (!data) {
+        throw new UnauthorizedException();
+      }
+
+      const user = await this.appService.findOne({ id: data.id });
+      const { password, ...result } = user;
+      return result;
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
+  }
+
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('jwt');
 
     return {
       message: 'success',
