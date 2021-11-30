@@ -13,6 +13,7 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: { email },
       select: ['id', 'email', 'password', 'nickname'],
+      relations: ['Workspaces'],
     });
     console.log(email, password, user);
     if (!user) {
