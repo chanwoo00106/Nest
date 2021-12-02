@@ -11,7 +11,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { onlineMap } from './onlineMap';
 
-@WebSocketGateway({ namespace: 'test' })
+@WebSocketGateway()
 export class EventsGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -38,7 +38,7 @@ export class EventsGateway
     newNamespace.emit('onlineList', Object.values(onlineMap[socket.nsp.name]));
   }
 
-  afterInit(client: any): any {
+  afterInit(): any {
     console.log('init');
   }
 }
