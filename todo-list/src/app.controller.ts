@@ -12,7 +12,7 @@ export class AppController {
     return this.appService.getAll();
   }
 
-  @ApiOperation({ summary: 'todo 추가' })
+  @ApiOperation({ summary: 'todo 추가', description: 'todo를 추가합니다.' })
   @Post('add')
   async createTodo(@Body() data: TodoDto): Promise<string> {
     this.appService.createTodo(data);

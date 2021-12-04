@@ -14,7 +14,10 @@ export class Todo {
   todo: string;
 
   @CreateDateColumn()
-  data: string;
+  start_date: Date;
+
+  @CreateDateColumn()
+  end_date: Date;
 
   @Column()
   toggle: boolean;

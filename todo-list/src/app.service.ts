@@ -17,7 +17,7 @@ export class AppService {
   async createTodo(todo: TodoDto): Promise<void> {
     try {
       const a = await this.todoRepository.create({
-        todo: todo.todo,
+        ...todo,
         toggle: false,
       });
 
