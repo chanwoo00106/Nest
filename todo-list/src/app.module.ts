@@ -18,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
       entities: [Todo],
       synchronize: true,
     }),
+    TypeOrmModule.forFeature([Todo]),
   ],
   controllers: [AppController],
   providers: [AppService],

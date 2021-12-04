@@ -10,9 +10,18 @@ export class AppService {
     @InjectRepository(Todo) private todoRepository: Repository<Todo>,
   ) {}
 
-  async createTodo(data: TodoDto): Promise<void> {
+  async getAll() {
+    return await this.todoRepository.find();
+  }
+
+  async createTodo(todo: TodoDto): Promise<void> {
     try {
-      this.todoRepository.create(data);
+      const a = await this.todoRepository.create({
+        todo: todo.todo,
+        toggle: false,
+      });
+
+      this.todoRepository.save(a);
     } catch (e) {
       throw new BadRequestException();
     }

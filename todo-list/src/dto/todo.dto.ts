@@ -5,7 +5,7 @@ export class ToggleDto {
   toggle: boolean;
 }
 
-export class TodoDto extends ToggleDto {
+export class TodoDto {
   @IsString()
   todo: string;
 }
