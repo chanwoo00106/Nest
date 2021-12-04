@@ -10,28 +10,40 @@ export class AppService {
     @InjectRepository(Todo) private todoRepository: Repository<Todo>,
   ) {}
 
-  async getAll() {
-    return await this.todoRepository.find();
+  async getAll(): Promise<Todo[]> {
+    try {
+      return await this.todoRepository.find();
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 
-  async createTodo(todo: TodoDto): Promise<void> {
+  async createTodo(todo: TodoDto): Promise<Todo> {
     try {
       const a = await this.todoRepository.create({
         ...todo,
         toggle: false,
       });
 
-      this.todoRepository.save(a);
+      return this.todoRepository.save(a);
     } catch (e) {
       throw new BadRequestException();
     }
   }
 
-  async update(id: number, data: TodoDto): Promise<void> {
-    await this.todoRepository.update(id, { ...data });
+  async update(id: number, data: TodoDto) {
+    try {
+      return await this.todoRepository.update(id, { ...data });
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 
   async remove(id: number) {
-    return await this.todoRepository.delete(id);
+    try {
+      return await this.todoRepository.delete(id);
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 }
