@@ -26,4 +26,12 @@ export class AppService {
       throw new BadRequestException();
     }
   }
+
+  async update(id: number, data: TodoDto): Promise<void> {
+    await this.todoRepository.update(id, { ...data });
+  }
+
+  async remove(id: number) {
+    return await this.todoRepository.delete(id);
+  }
 }

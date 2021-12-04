@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { TodoDto } from './dto/todo.dto';
@@ -17,5 +25,19 @@ export class AppController {
   async createTodo(@Body() data: TodoDto): Promise<string> {
     this.appService.createTodo(data);
     return 'done';
+  }
+
+  @Put('update/:id')
+  async update(
+    @Param('id') id: number,
+    @Body() data: TodoDto,
+  ): Promise<string> {
+    this.appService.update(id, data);
+    return 'done';
+  }
+
+  @Delete('delete/:id')
+  async remove(@Param('id') id: number) {
+    return this.appService.remove(id);
   }
 }
