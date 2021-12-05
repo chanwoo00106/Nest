@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { Todo } from './Entity/todo.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TodoDto } from './dto/todo.dto';
+import { TodoDto, ToggleDto } from './dto/todo.dto';
 
 @Injectable()
 export class AppService {
@@ -42,6 +42,14 @@ export class AppService {
   async remove(id: number) {
     try {
       return await this.todoRepository.delete(id);
+    } catch (e) {
+      throw new BadRequestException();
+    }
+  }
+
+  async toggle(id: number, data: ToggleDto) {
+    try {
+      return await this.todoRepository.update(id, { toggle: data.toggle });
     } catch (e) {
       throw new BadRequestException();
     }

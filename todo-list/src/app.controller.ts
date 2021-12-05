@@ -4,12 +4,13 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
-import { TodoDto } from './dto/todo.dto';
+import { TodoDto, ToggleDto } from './dto/todo.dto';
 
 @ApiTags('Todo')
 @Controller()
@@ -89,5 +90,30 @@ export class AppController {
   @Delete('delete/:id')
   async remove(@Param('id') id: number) {
     return this.appService.remove(id);
+  }
+
+  //------------------------------------------------
+
+  @ApiOperation({
+    summary: '했는지 안 했는지 체크',
+    description: 'toggle을 변경합니다',
+  })
+  @ApiParam({
+    name: 'id',
+    description: '변경할 todo의 id',
+    required: true,
+    example: 1,
+  })
+  @ApiResponse({
+    status: 400,
+    description: '그냥 오류 나면 다 이거 뜸',
+  })
+  @Patch('toggle/:id')
+  async toggle(
+    @Param('id') id: number,
+    @Body() toggle: ToggleDto,
+  ): Promise<string> {
+    this.appService.toggle(id, toggle);
+    return 'done';
   }
 }
