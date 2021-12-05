@@ -32,26 +32,26 @@ export class AppService {
   }
 
   async update(id: number, data: TodoDto) {
-    try {
+    const todo = await this.todoRepository.findOne(id);
+    if (todo) {
       return await this.todoRepository.update(id, { ...data });
-    } catch (e) {
-      throw new BadRequestException();
     }
+    throw new BadRequestException();
   }
 
   async remove(id: number) {
-    try {
+    const todo = await this.todoRepository.findOne(id);
+    if (todo) {
       return await this.todoRepository.delete(id);
-    } catch (e) {
-      throw new BadRequestException();
     }
+    throw new BadRequestException();
   }
 
   async toggle(id: number, data: ToggleDto) {
-    try {
+    const todo = await this.todoRepository.findOne(id);
+    if (todo) {
       return await this.todoRepository.update(id, { toggle: data.toggle });
-    } catch (e) {
-      throw new BadRequestException();
     }
+    throw new BadRequestException();
   }
 }

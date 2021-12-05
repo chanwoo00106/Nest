@@ -63,12 +63,8 @@ export class AppController {
     description: '그냥 오류 나면 다 이거 뜸',
   })
   @Put('update/:id')
-  async update(
-    @Param('id') id: number,
-    @Body() data: TodoDto,
-  ): Promise<string> {
-    this.appService.update(id, data);
-    return 'done';
+  async update(@Param('id') id: number, @Body() data: TodoDto) {
+    return this.appService.update(id, data);
   }
 
   //------------------------------------------------
@@ -109,11 +105,7 @@ export class AppController {
     description: '그냥 오류 나면 다 이거 뜸',
   })
   @Patch('toggle/:id')
-  async toggle(
-    @Param('id') id: number,
-    @Body() toggle: ToggleDto,
-  ): Promise<string> {
-    this.appService.toggle(id, toggle);
-    return 'done';
+  async toggle(@Param('id') id: number, @Body() toggle: ToggleDto) {
+    return this.appService.toggle(id, toggle);
   }
 }
