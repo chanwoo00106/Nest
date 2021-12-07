@@ -9,13 +9,13 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AppService } from './app.service';
-import { TodoDto, ToggleDto } from './dto/todo.dto';
+import { TodoDto, ToggleDto } from 'src/dto/todo.dto';
+import { TodoService } from './todo.service';
 
 @ApiTags('Todo')
-@Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+@Controller('todo')
+export class TodoController {
+  constructor(private readonly todoService: TodoService) {}
 
   @ApiOperation({
     summary: '모든 todo 불러오기',
@@ -27,7 +27,7 @@ export class AppController {
   })
   @Get()
   async getAll() {
-    return this.appService.getAll();
+    return this.todoService.getAll();
   }
 
   //------------------------------------------------
@@ -42,7 +42,7 @@ export class AppController {
   })
   @Post('add')
   async createTodo(@Body() data: TodoDto): Promise<string> {
-    this.appService.createTodo(data);
+    this.todoService.createTodo(data);
     return 'done';
   }
 
@@ -64,7 +64,7 @@ export class AppController {
   })
   @Put('update/:id')
   async update(@Param('id') id: number, @Body() data: TodoDto) {
-    return this.appService.update(id, data);
+    return this.todoService.update(id, data);
   }
 
   //------------------------------------------------
@@ -85,7 +85,7 @@ export class AppController {
   })
   @Delete('delete/:id')
   async remove(@Param('id') id: number) {
-    return this.appService.remove(id);
+    return this.todoService.remove(id);
   }
 
   //------------------------------------------------
@@ -106,6 +106,6 @@ export class AppController {
   })
   @Patch('toggle/:id')
   async toggle(@Param('id') id: number, @Body() toggle: ToggleDto) {
-    return this.appService.toggle(id, toggle);
+    return this.todoService.toggle(id, toggle);
   }
 }

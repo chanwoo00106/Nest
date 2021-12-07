@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Todo } from './Entity/todo.entity';
+import { TodoDto, ToggleDto } from 'src/dto/todo.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TodoDto, ToggleDto } from './dto/todo.dto';
+import { Todo } from 'src/Entity/todo.entity';
 
 @Injectable()
-export class AppService {
+export class TodoService {
   constructor(
     @InjectRepository(Todo) private todoRepository: Repository<Todo>,
   ) {}
@@ -20,11 +20,19 @@ export class AppService {
 
   async createTodo(todo: TodoDto): Promise<Todo> {
     try {
-      const a = await this.todoRepository.create({
-        ...todo,
-        toggle: false,
-      });
-
+      let a;
+      if (await this.todoRepository.find()) {
+        a = await this.todoRepository.create({
+          id: 1,
+          ...todo,
+          toggle: false,
+        });
+      } else {
+        a = await this.todoRepository.create({
+          ...todo,
+          toggle: false,
+        });
+      }
       return this.todoRepository.save(a);
     } catch (e) {
       throw new BadRequestException();

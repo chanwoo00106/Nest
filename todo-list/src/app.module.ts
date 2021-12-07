@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Todo } from './Entity/todo.entity';
 import { ConfigModule } from '@nestjs/config';
+import { TodoModule } from './todo/todo.module';
 
 @Module({
   imports: [
@@ -18,9 +17,7 @@ import { ConfigModule } from '@nestjs/config';
       entities: [Todo],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Todo]),
+    TodoModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
