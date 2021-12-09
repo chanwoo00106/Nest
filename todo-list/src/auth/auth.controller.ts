@@ -1,17 +1,13 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { userDto } from './dto/user.dto';
-import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({
     summary: '회원가입',
@@ -41,13 +37,23 @@ export class AuthController {
     @Body() user: userDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.authService.login(user);
-    const jwt = await this.jwtService.signAsync({ username: result });
+    const jwt = await this.authService.login(user);
 
     res.cookie('auth', jwt, { httpOnly: true });
     res.send();
   }
 
+  //--------------------------------------------
+
+  @ApiOperation({
+    summary: '체크',
+    description: 'cookie 유효성 확인',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'user가 없을 때',
+  })
+  @Get('check')
   async check(@Req() req: Request) {
     const cookie = req.cookies['auth'];
     if (await this.authService.check(cookie)) {

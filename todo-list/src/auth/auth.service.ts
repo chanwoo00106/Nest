@@ -44,7 +44,8 @@ export class AuthService {
     if (!result && (await bcrypt.compare(user.password, result.password)))
       throw new BadRequestException();
 
-    return result.username;
+    const jwt = await this.jwtService.signAsync({ username: result.username });
+    return jwt;
   }
 
   async check(cookie: string) {
