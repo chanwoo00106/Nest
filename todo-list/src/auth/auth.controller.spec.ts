@@ -13,6 +13,8 @@ describe('AuthController', () => {
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(
+      controller.register({ username: 'username', password: 'username' }),
+    ).toEqual('username');
   });
 });

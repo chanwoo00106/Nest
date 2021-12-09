@@ -1,6 +1,6 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { userDto } from './dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -42,14 +42,17 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const result = await this.authService.login(user);
-
-    console.log(result);
-
     const jwt = await this.jwtService.signAsync({ username: result });
-
-    console.log(jwt);
 
     res.cookie('auth', jwt, { httpOnly: true });
     res.send();
+  }
+
+  async check(@Req() req: Request) {
+    const cookie = req.cookies['auth'];
+    if (await this.authService.check(cookie)) {
+      return true;
+    }
+    return false;
   }
 }

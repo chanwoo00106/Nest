@@ -1,14 +1,20 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Auth } from 'src/Entity/auth.entity';
 import { Repository } from 'typeorm';
 import { userDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(Auth) private authRepository: Repository<Auth>,
+    private jwtService: JwtService,
   ) {}
 
   async register(user: userDto) {
@@ -39,5 +45,15 @@ export class AuthService {
       throw new BadRequestException();
 
     return result.username;
+  }
+
+  async check(cookie: string) {
+    const { username } = await this.jwtService.verify(cookie);
+
+    if (username) {
+      return true;
+    }
+
+    throw new UnauthorizedException();
   }
 }
