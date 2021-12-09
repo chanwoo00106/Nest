@@ -5,13 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Auth } from 'src/Entity/auth.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { jwtConstants } from './constants';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Auth]),
     PassportModule,
     JwtModule.register({
-      secret: process.env.SECRET,
+      secret: jwtConstants.secret,
       signOptions: { expiresIn: '1d' },
     }),
   ],

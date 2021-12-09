@@ -3,14 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Auth } from 'src/Entity/auth.entity';
 import { Repository } from 'typeorm';
 import { userDto } from './dto/user.dto';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(Auth) private authRepository: Repository<Auth>,
-    private jwtService: JwtService,
   ) {}
 
   async register(user: userDto) {
@@ -40,6 +38,6 @@ export class AuthService {
     if (!result && (await bcrypt.compare(user.password, result.password)))
       throw new BadRequestException();
 
-    return await this.jwtService.sign({ username: user.username });
+    return result.username;
   }
 }

@@ -3,11 +3,15 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { userDto } from './dto/user.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private jwtService: JwtService,
+  ) {}
 
   @ApiOperation({
     summary: '회원가입',
@@ -37,7 +41,15 @@ export class AuthController {
     @Body() user: userDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    res.cookie('auth', await this.authService.login(user));
+    const result = await this.authService.login(user);
+
+    console.log(result);
+
+    const jwt = await this.jwtService.signAsync({ username: result });
+
+    console.log(jwt);
+
+    res.cookie('auth', jwt, { httpOnly: true });
     res.send();
   }
 }
