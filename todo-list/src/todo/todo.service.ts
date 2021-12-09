@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { TodoDto, ToggleDto } from 'src/dto/todo.dto';
+import { TodoDto, ToggleDto } from './dto/todo.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Todo } from 'src/Entity/todo.entity';

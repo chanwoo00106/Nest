@@ -9,7 +9,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { TodoDto, ToggleDto } from 'src/dto/todo.dto';
+import { TodoDto, ToggleDto } from './dto/todo.dto';
 import { TodoService } from './todo.service';
 
 @ApiTags('Todo')

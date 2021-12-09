@@ -49,10 +49,6 @@ export class AuthController {
     summary: '체크',
     description: 'cookie 유효성 확인',
   })
-  @ApiResponse({
-    status: 400,
-    description: 'user가 없을 때',
-  })
   @Get('check')
   async check(@Req() req: Request) {
     const cookie = req.cookies['auth'];
