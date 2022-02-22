@@ -1,18 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { GraphQLModule } from '@nestjs/graphql';
-import { join } from 'path';
-import { PetsModule } from './pets/pets.module';
+import { AuthorModule } from './author/author.module';
+import { BookModule } from './book/book.module';
+import { BookService } from './book/book.service';
 
 @Module({
-  imports: [
-    GraphQLModule.forRoot({
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-    }),
-    PetsModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [AuthorModule, BookModule],
+  controllers: [],
+  providers: [BookService],
 })
 export class AppModule {}
