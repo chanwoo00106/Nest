@@ -1,7 +1,14 @@
-import { Resolver, Query, ResolveField, Parent } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  ResolveField,
+  Parent,
+  Args,
+  Mutation,
+} from '@nestjs/graphql';
 import { Author } from 'src/author/author.schema';
 import { AuthorService } from 'src/author/author.service';
-import { Book } from './book.schema';
+import { Book, CreateBookInput, FindBookInput } from './book.schema';
 import { BookService } from './book.service';
 
 @Resolver(() => Book)
@@ -14,6 +21,16 @@ export class BookResolver {
   @Query(() => [Book])
   async books() {
     return this.bookService.findMany();
+  }
+
+  @Query(() => Book)
+  async book(@Args('input') book: FindBookInput) {
+    return this.bookService.findById(book.id);
+  }
+
+  @Mutation(() => Book)
+  async createBook(@Args('input') book: CreateBookInput) {
+    return this.bookService.createBook(book);
   }
 
   @ResolveField(() => Author)
