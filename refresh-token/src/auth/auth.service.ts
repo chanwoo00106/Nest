@@ -42,7 +42,19 @@ export class AuthService {
     return tokens;
   }
 
-  logout() {}
+  async logout(userId: number) {
+    await this.prisma.user.updateMany({
+      where: {
+        id: userId,
+        hashedRt: {
+          not: null,
+        },
+      },
+      data: {
+        hashedRt: null,
+      },
+    });
+  }
 
   refreshTokens() {}
 
@@ -76,7 +88,7 @@ export class AuthService {
           sub: userId,
           email,
         },
-        { expiresIn: 60 * 15, secret: 'rt-secret' },
+        { expiresIn: 60 * 60 * 24 * 7, secret: 'rt-secret' },
       ),
     ]);
 
