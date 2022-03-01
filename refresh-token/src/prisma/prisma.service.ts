@@ -14,10 +14,10 @@ export class PrismaService
     });
   }
 
-  onModuleDestroy() {
-    throw new Error('Method not implemented.');
+  async onModuleDestroy() {
+    await this.$disconnect();
   }
-  onModuleInit() {
-    throw new Error('Method not implemented.');
+  async onModuleInit() {
+    await this.$connect();
   }
 }

@@ -15,7 +15,7 @@ model User {
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
-  email String
+  email String @unique
   hash String
   hashedRt String? // refresh token
 
