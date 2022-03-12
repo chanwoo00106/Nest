@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { GetCurrentUser, GetCurrentUserId, Public } from './common/decorators';
 import { AuthService } from './auth.service';
-import { AtGuard, RtGuard } from './common/guards';
+import { RtGuard } from './common/guards';
 import { AuthDto } from './dto';
 import { Tokens } from './types';
 
