@@ -36,10 +36,19 @@
   </head>
   <body>
     <div id="wrap">
-      <form>
-        <input id="file" type="file" type="text" />
+      <form action="/upload" enctype="multipart/form-data" method="post">
+        <input id="file" name="file" type="file" />
         <label for="file">파일 선택</label>
+        <button type="submit">submit</button>
       </form>
     </div>
+    <script>
+      const form = document.querySelector('form');
+      const img = document.querySelector('input');
+      img.addEventListener('change', (e) => {
+        console.log(e);
+      });
+      form.addEventListener('submit', async (e) => {});
+    </script>
   </body>
 </html>

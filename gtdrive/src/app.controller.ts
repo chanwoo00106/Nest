@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Render } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Render,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from './app.service';
 
 @Controller()
@@ -12,7 +21,10 @@ export class AppController {
   }
 
   @Post('/upload')
-  upload() {
-    return this.appService.upload();
+  @HttpCode(201)
+  @UseInterceptors(FileInterceptor('file'))
+  upload(@UploadedFile() file: Express.Multer.File) {
+    this.appService.s3_upload(file.buffer, file.originalname, file.mimetype);
+    return;
   }
 }
