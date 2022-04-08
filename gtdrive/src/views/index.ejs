@@ -33,16 +33,40 @@
         transform: scale(1.1);
       }
       .name {
+        width: 100%;
+        margin-top: 2rem;
+        font-size: 1rem;
+        font-weight: 200;
+        outline: none;
+        border: none;
+        background: #dfe6e9;
+        padding: 1rem;
+        border-radius: 0.5rem;
+      }
+
+      .btn {
+        padding: 1rem;
+        font-size: 1.1rem;
+        outline: none;
+        border: none;
+        border-radius: 0.5rem;
+        margin-top: 0.5rem;
+        cursor: pointer;
       }
     </style>
   </head>
   <body>
     <div id="wrap">
       <form action="/upload" enctype="multipart/form-data" method="post">
-        <input id="file" name="file" type="file" />
-        <label class="형우" for="file">파일 선택</label>
-        <input class="name" type="text" name="name" />
-        <button type="submit">submit</button>
+        <input id="file" class="형우" name="file" type="file" />
+        <label class="file" for="file">파일 선택</label>
+        <input
+          class="name"
+          placeholder="파일 이름 입력"
+          type="text"
+          name="name"
+        />
+        <button class="btn" type="submit">submit</button>
       </form>
     </div>
     <script>

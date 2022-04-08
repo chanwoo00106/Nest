@@ -59,7 +59,10 @@ export class AppService {
   async findFile(name: string) {
     const file = await this.fileRepository.findOne({ name });
     const threeLater = new Date(new Date().setDate(new Date().getDate() + 3));
-    if (threeLater <= new Date()) throw new NotFoundException('Not Found');
+    if (threeLater <= new Date()) {
+      await this.fileRepository.delete({ id: file.id });
+      throw new NotFoundException('Not Found');
+    }
     if (!file) throw new NotFoundException('Not Found');
     return file;
   }
