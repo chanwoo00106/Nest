@@ -2,7 +2,9 @@ import {
   Controller,
   Get,
   HttpCode,
+  Param,
   Post,
+  Query,
   Render,
   UploadedFile,
   UseInterceptors,
@@ -26,5 +28,10 @@ export class AppController {
   upload(@UploadedFile() file: Express.Multer.File) {
     this.appService.s3_upload(file.buffer, file.originalname, file.mimetype);
     return;
+  }
+
+  @Get('/file/:name')
+  findFile(@Param('name') name: string) {
+    return this.appService.findFile(name);
   }
 }

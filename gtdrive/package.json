@@ -27,6 +27,8 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^8.0.3",
     "aws-sdk": "^2.1110.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "multer": "^1.4.4",

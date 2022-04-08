@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
@@ -50,5 +55,13 @@ export class AppService {
       Logger.error(`${name} failed upload`, e);
       throw new BadRequestException(e);
     }
+  }
+
+  async findFile(name: string) {
+    const file = await this.fileRepository.findOne({ name });
+    const threeLater = new Date(new Date().setDate(new Date().getDate() + 3));
+    if (threeLater <= new Date()) throw new NotFoundException('Not Found');
+    if (!file) throw new NotFoundException('Not Found');
+    return file;
   }
 }
