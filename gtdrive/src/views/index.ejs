@@ -13,7 +13,7 @@
         justify-content: center;
         align-items: center;
       }
-      input {
+      .형우 {
         display: none;
       }
       label {
@@ -32,13 +32,16 @@
       label:hover {
         transform: scale(1.1);
       }
+      .name {
+      }
     </style>
   </head>
   <body>
     <div id="wrap">
       <form action="/upload" enctype="multipart/form-data" method="post">
         <input id="file" name="file" type="file" />
-        <label for="file">파일 선택</label>
+        <label class="형우" for="file">파일 선택</label>
+        <input class="name" type="text" name="name" />
         <button type="submit">submit</button>
       </form>
     </div>

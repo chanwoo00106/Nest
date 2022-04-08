@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { File } from './Entities/files';
+import { Upload } from './dto/Upload';
 
 @Injectable()
 export class AppService {
@@ -22,17 +23,15 @@ export class AppService {
     private configService: ConfigService,
     @InjectRepository(File) private fileRepository: Repository<File>,
   ) {}
-
-  getHello(): string {
-    return 'Hello World!';
-  }
-
-  async s3_upload(file: Buffer, name: string, mimetype: string) {
+  async s3_upload(file: Buffer, name: string, mimetype: string, data: Upload) {
     if (await this.fileRepository.findOne({ name: name }))
       throw new BadRequestException('already exsit name');
+
     const params = {
       Bucket: this.AWS_S3_BUCKET,
-      Key: String(name),
+      Key: data.name
+        ? `${data.name}.${name.split('.')[name.split('.').length - 1]}`
+        : String(name),
       Body: file,
       ACL: 'public-read',
       ContentType: mimetype,
