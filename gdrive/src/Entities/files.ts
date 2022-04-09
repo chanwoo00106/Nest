@@ -3,7 +3,9 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { Users } from './users';
 
 @Entity()
 export class File {
@@ -21,4 +23,8 @@ export class File {
 
   @CreateDateColumn()
   createAt: Date;
+
+  @ManyToOne(() => Users, (user) => user.files)
+  @Column({ nullable: false })
+  user: Users;
 }

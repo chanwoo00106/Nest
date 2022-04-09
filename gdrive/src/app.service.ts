@@ -23,9 +23,11 @@ export class AppService {
     private configService: ConfigService,
     @InjectRepository(File) private fileRepository: Repository<File>,
   ) {}
+
+  // TODO file, name, mimetype 값이 없을 때 에러 내기
   async s3_upload(file: Buffer, name: string, mimetype: string, data: Upload) {
     if (await this.fileRepository.findOne({ name: name }))
-      throw new BadRequestException('already exsit name');
+      throw new BadRequestException('already exsit name'); // TODO data.name도 중복 되지 않게 하기
 
     if (!name.includes('.'))
       throw new BadRequestException('Not found file type');
