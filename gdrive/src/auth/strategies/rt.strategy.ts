@@ -9,23 +9,24 @@ type JwtPayload = {
 };
 
 @Injectable()
-export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class AtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
   constructor(private configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          const cookie = request.cookies?.accessToken;
+          const cookie = request.cookies?.refreshToken;
           console.log(cookie);
           if (!cookie) return null;
           return cookie;
         },
       ]),
-      secretOrKey: configService.get('JWT_ACCESS_SECRET'),
+      secretOrKey: configService.get('JWT_REFRESH_SECRET'),
     });
   }
 
-  validate(payload: JwtPayload) {
+  validate(req: Request, payload: JwtPayload) {
     console.log(payload);
-    return payload;
+    const refreshToken = req.cookies.refreshToken;
+    return { ...payload, refreshToken };
   }
 }
