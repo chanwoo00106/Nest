@@ -27,6 +27,9 @@ export class AppService {
     if (await this.fileRepository.findOne({ name: name }))
       throw new BadRequestException('already exsit name');
 
+    if (!name.includes('.'))
+      throw new BadRequestException('Not found file type');
+
     const params = {
       Bucket: this.AWS_S3_BUCKET,
       Key: data.name
