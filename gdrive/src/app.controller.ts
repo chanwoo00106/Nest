@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -27,6 +28,7 @@ export class AppController {
   @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
   upload(@UploadedFile() file: Express.Multer.File, @Body() data: Upload) {
+    if (!file) throw new BadRequestException('Not Found file');
     this.appService.s3_upload(
       file.buffer,
       file.originalname,
