@@ -1,15 +1,21 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/Entities/users';
 import { Repository } from 'typeorm';
-import { RegisterDto } from './dto';
+import { LoginDto, RegisterDto } from './dto';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private configService: ConfigService,
+    private jwtService: JwtService,
     @InjectRepository(Users) private userRepository: Repository<Users>,
   ) {}
   async register(data: RegisterDto) {
@@ -23,8 +29,52 @@ export class AuthService {
       id: data.id,
       password: hash,
       files: null,
+      refresh: null,
     });
     this.userRepository.save(user);
     return;
+  }
+
+  async login(data: LoginDto) {
+    const user = await this.userRepository.findOne({ id: data.id });
+    if (!user) throw new BadRequestException('Not Found user');
+
+    if (!(await bcrypt.compare(data.password, user.password)))
+      throw new ForbiddenException('Not matched password');
+
+    const tokens = await this.getToken(user.id);
+    await this.userRepository.update(
+      { id: user.id },
+      { refresh: tokens.refreshToken },
+    );
+    return tokens;
+  }
+
+  async getToken(id: string) {
+    const [at, rt] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: id,
+        },
+        {
+          expiresIn: 60 * 15,
+          secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          sub: id,
+        },
+        {
+          expiresIn: 60 * 60 * 24 * 7,
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        },
+      ),
+    ]);
+
+    return {
+      accessToken: at,
+      refreshToken: rt,
+    };
   }
 }

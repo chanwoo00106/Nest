@@ -3,13 +3,15 @@ import { File } from './files';
 
 @Entity()
 export class Users {
-  @PrimaryColumn()
+  @PrimaryColumn({ type: 'varchar', nullable: false })
   id: string;
 
-  @Column()
+  @Column({ nullable: false, type: 'varchar' })
   password: string;
 
+  @Column({ nullable: true, type: 'varchar' })
+  refresh: string;
+
   @OneToMany(() => File, (file) => file.user)
-  @Column({ nullable: true })
   files: File[];
 }

@@ -25,6 +25,5 @@ export class File {
   createAt: Date;
 
   @ManyToOne(() => Users, (user) => user.files)
-  @Column({ nullable: false })
   user: Users;
 }
