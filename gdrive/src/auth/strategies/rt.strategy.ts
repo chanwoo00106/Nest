@@ -15,7 +15,6 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
           const cookie = request.cookies?.refreshToken;
-          console.log(cookie);
           if (!cookie) return null;
           return cookie;
         },
@@ -25,7 +24,6 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
   }
 
   validate(req: Request, payload: JwtPayload) {
-    console.log(payload);
     const refreshToken = req.cookies.refreshToken;
     return { ...payload, refreshToken };
   }

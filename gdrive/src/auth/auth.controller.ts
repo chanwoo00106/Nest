@@ -10,13 +10,13 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
-  @Post('/register')
+  @Post('/signup')
   async register(@Body() data: RegisterDto) {
     return this.authService.register(data);
   }
 
   @Public()
-  @Post('/login')
+  @Post('/signin')
   async login(@Body() data: LoginDto, @Res() res: Response) {
     const tokens = await this.authService.login(data);
 
@@ -52,10 +52,9 @@ export class AuthController {
     res.send();
   }
 
-  @Public()
   @Get('/check')
   async check(@Req() req: Request) {
-    console.log(req);
+    console.log(req.header);
     return 'success';
   }
 }
