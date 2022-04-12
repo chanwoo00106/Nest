@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { File } from './Entities/files';
 import { Upload } from './dto/Upload';
+import { Users } from './Entities/users';
 
 @Injectable()
 export class AppService {
@@ -22,6 +23,7 @@ export class AppService {
   constructor(
     private configService: ConfigService,
     @InjectRepository(File) private fileRepository: Repository<File>,
+    @InjectRepository(Users) private userRepository: Repository<Users>,
   ) {}
 
   async s3_upload(file: Buffer, name: string, mimetype: string, data: Upload) {
@@ -71,5 +73,10 @@ export class AppService {
     }
     if (!file) throw new NotFoundException('Not Found');
     return file;
+  }
+
+  async MyFiles(id: string) {
+    const user = await this.userRepository.findOne(id);
+    return user.files;
   }
 }

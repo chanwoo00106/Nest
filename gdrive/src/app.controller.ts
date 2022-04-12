@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from './app.service';
+import { User } from './auth/decoraotors/user.decorator';
 import { Upload } from './dto/Upload';
 
 @Controller()
@@ -34,5 +35,10 @@ export class AppController {
   @Get('/file/:name')
   findFile(@Param('name') name: string) {
     return this.appService.findFile(name);
+  }
+
+  @Get('/my')
+  myFiles(@User('id') id: string) {
+    return this.appService.MyFiles(id);
   }
 }
