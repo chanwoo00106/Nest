@@ -1,9 +1,18 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { RegisterDto, LoginDto } from './dto';
 import { AuthService } from './auth.service';
 import { Public } from './decoraotors/public.decorator';
 import { Request, Response } from 'express';
 import { User } from './decoraotors/user.decorator';
+import { RtGuard } from './guards/rt.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -38,6 +47,8 @@ export class AuthController {
   }
 
   @Post('/refresh')
+  @Public()
+  @UseGuards(new RtGuard())
   async refresh(
     @User() data: { refreshToken: string; id: string },
     @Res() res: Response,

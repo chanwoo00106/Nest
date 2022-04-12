@@ -9,12 +9,13 @@ type JwtPayload = {
 };
 
 @Injectable()
-export class AtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
+export class RtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
   constructor(private configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: Request) => {
-          const cookie = request.cookies?.refreshToken;
+        (req: Request) => {
+          const cookie = req.header('cookie');
+          console.log(cookie);
           if (!cookie) return null;
           return cookie;
         },
