@@ -6,7 +6,6 @@ import {
   HttpCode,
   Param,
   Post,
-  Render,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -17,12 +16,6 @@ import { Upload } from './dto/Upload';
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
-
-  @Get()
-  @Render('index.ejs')
-  getHello(): string {
-    return;
-  }
 
   @Post('/upload')
   @HttpCode(201)
