@@ -56,11 +56,12 @@ export class AuthService {
       { id: id },
       { refresh: bcrypt.hashSync(tokens.refreshToken, 10) },
     );
+    console.log(tokens.AtExpiredAt)
     return tokens;
   }
 
   private async getToken(id: string) {
-    const [at, rt] = await Promise.all([
+    const [at, rt, RtExpiredAt, AtExpiredAt] = await Promise.all([
       this.jwtService.signAsync(
         {
           sub: id,
@@ -79,11 +80,15 @@ export class AuthService {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
         },
       ),
+      new Date().setSeconds(new Date().getSeconds() + 604800),
+      new Date().setSeconds(new Date().getSeconds() + 900),
     ]);
 
     return {
       accessToken: at,
       refreshToken: rt,
+      AtExpiredAt,
+      RtExpiredAt,
     };
   }
 }
