@@ -1,16 +1,8 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { RegisterDto, LoginDto } from './dto';
 import { AuthService } from './auth.service';
 import { Public } from './decoraotors/public.decorator';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { User } from './decoraotors/user.decorator';
 import { RtGuard } from './guards/rt.guard';
 
@@ -49,23 +41,12 @@ export class AuthController {
   @Post('/refresh')
   @Public()
   @UseGuards(new RtGuard())
-  async refresh(
-    @User() data: { refreshToken: string; id: string },
-    @Res() res: Response,
-  ) {
-    const refresh = this.authService.refresh(data);
-    res.cookie('refreshToken', refresh, {
-      httpOnly: true,
-      expires: new Date(
-        new Date().setSeconds(new Date().getSeconds() + 604800),
-      ),
-    });
-    res.send();
+  async refresh(@User() data: { id: string }) {
+    return this.authService.refresh(data);
   }
 
   @Get('/check')
-  async check(@Req() req: Request) {
-    console.log(req.header);
+  async check() {
     return 'success';
   }
 }

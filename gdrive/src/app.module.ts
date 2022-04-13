@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Entities } from './Entities';
-import { File } from './Entities/files';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -23,7 +22,7 @@ import { AuthModule } from './auth/auth.module';
       entities: [...Entities],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([File]),
+    TypeOrmModule.forFeature([...Entities]),
     AuthModule,
   ],
   controllers: [AppController],

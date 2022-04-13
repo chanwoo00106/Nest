@@ -2,7 +2,6 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -51,26 +50,13 @@ export class AuthService {
     return tokens;
   }
 
-  async refresh({
-    id,
-    refreshToken,
-  }: {
-    refreshToken: string;
-    id: string;
-  }): Promise<string> {
-    const result = await this.userRepository.findOne({
-      id,
-      refresh: refreshToken,
-    });
-
-    if (!result) throw new UnauthorizedException('Not Found User'); // TODO guard로 옮기기
-
+  async refresh({ id }: { id: string }) {
     const tokens = await this.getToken(id);
     await this.userRepository.update(
       { id: id },
       { refresh: bcrypt.hashSync(tokens.refreshToken, 10) },
     );
-    return tokens.refreshToken;
+    return tokens;
   }
 
   private async getToken(id: string) {

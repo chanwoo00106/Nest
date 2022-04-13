@@ -51,7 +51,7 @@ export class AppService {
 
     try {
       const result = await this.s3.upload(params).promise();
-      const newFile = await this.fileRepository.create({
+      const newFile = this.fileRepository.create({
         name,
         url: result.Location,
         mimetype,

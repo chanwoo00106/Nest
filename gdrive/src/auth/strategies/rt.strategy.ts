@@ -3,6 +3,9 @@ import { Strategy, ExtractJwt } from 'passport-jwt';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Users } from 'src/Entities/users';
+import { Repository } from 'typeorm';
 
 type JwtPayload = {
   id: string;
@@ -10,7 +13,10 @@ type JwtPayload = {
 
 @Injectable()
 export class RtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    @InjectRepository(Users) private userRepository: Repository<Users>,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
@@ -24,8 +30,11 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
     });
   }
 
-  validate(req: Request, payload: JwtPayload) {
-    const refreshToken = req.cookies.refreshToken;
-    return { ...payload, refreshToken };
+  async;
+
+  async validate(payload: JwtPayload) {
+    const user = await this.userRepository.findOne(payload.id);
+    if (!user) return false;
+    return { ...payload };
   }
 }
