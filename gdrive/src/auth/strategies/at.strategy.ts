@@ -20,10 +20,20 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          const cookie = req.header('cookie');
+          const cookie = req.headers.cookie;
+          let temp: string[] = [];
+          console.log(req.cookies);
 
           if (!cookie) return null;
-          return cookie;
+          else if (cookie.includes('accessToken')) {
+            temp = cookie.split(' ');
+            temp.forEach((i) => {
+              if (i.includes('accessToken')) {
+                i = i.replace('accessToken=', '');
+                return i.replace(';', '');
+              }
+            });
+          } else return cookie;
         },
       ]),
       secretOrKey: configService.get('JWT_ACCESS_SECRET'),
