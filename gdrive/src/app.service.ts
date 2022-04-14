@@ -77,6 +77,6 @@ export class AppService {
 
   async MyFiles(id: string) {
     const user = await this.userRepository.findOne(id);
-    return user.files;
+    return { id: user.id, files: user.files };
   }
 }

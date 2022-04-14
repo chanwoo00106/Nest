@@ -33,6 +33,6 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
   async validate(payload: JwtPayload) {
     const user = await this.userRepository.findOne(payload.sub);
     if (!user) return false;
-    return true;
+    return user;
   }
 }

@@ -56,7 +56,6 @@ export class AuthService {
       { id: id },
       { refresh: bcrypt.hashSync(tokens.refreshToken, 10) },
     );
-    console.log(tokens.AtExpiredAt)
     return tokens;
   }
 

@@ -30,8 +30,6 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
     });
   }
 
-  async;
-
   async validate(payload: JwtPayload) {
     const user = await this.userRepository.findOne(payload.id);
     if (!user) return false;
