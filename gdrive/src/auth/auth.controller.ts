@@ -23,22 +23,30 @@ export class AuthController {
 
     res.cookie('accessToken', tokens.accessToken, {
       httpOnly: true,
-      expires: new Date(new Date().setSeconds(new Date().getSeconds() + 900)),
+      expires: new Date(tokens.AtExpiredAt),
     });
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      expires: new Date(
-        new Date().setSeconds(new Date().getSeconds() + 604800),
-      ),
+      expires: new Date(tokens.RtExpiredAt),
     });
-    res.send();
+    res.send({ ...tokens });
   }
 
   @Post('/refresh')
   @Public()
   @UseGuards(new RtGuard())
-  async refresh(@User() data: { id: string }) {
-    return this.authService.refresh(data);
+  async refresh(@User() data: { id: string }, @Res() res: Response) {
+    const tokens = await this.authService.refresh(data);
+
+    res.cookie('accessToken', tokens.accessToken, {
+      httpOnly: true,
+      expires: new Date(tokens.AtExpiredAt),
+    });
+    res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      expires: new Date(tokens.RtExpiredAt),
+    });
+    res.send({ ...tokens });
   }
 
   @Get('/check')

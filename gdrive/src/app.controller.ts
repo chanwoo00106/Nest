@@ -24,7 +24,11 @@ export class AppController {
   @Post('/upload')
   @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
-  upload(@UploadedFile() file: Express.Multer.File, @Body() data: Upload) {
+  upload(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() data: Upload,
+    @User() user: { id: string },
+  ) {
     console.log(file);
     if (!file) throw new BadRequestException('Not Found file');
 
@@ -33,6 +37,7 @@ export class AppController {
       file.originalname,
       file.mimetype,
       data,
+      user.id,
     );
     return;
   }

@@ -26,7 +26,13 @@ export class AppService {
     @InjectRepository(Users) private userRepository: Repository<Users>,
   ) {}
 
-  async s3_upload(file: Buffer, name: string, mimetype: string, data: Upload) {
+  async s3_upload(
+    file: Buffer,
+    name: string,
+    mimetype: string,
+    data: Upload,
+    user: string,
+  ) {
     if (
       (!data.name && (await this.fileRepository.findOne({ name: name }))) ||
       (data.name && (await this.fileRepository.findOne({ name: data.name })))
@@ -55,8 +61,11 @@ export class AppService {
         name,
         url: result.Location,
         mimetype,
+        user: {
+          id: user,
+        },
       });
-      this.fileRepository.save(newFile);
+      await this.fileRepository.save(newFile);
       Logger.log(`${name} success upload`);
     } catch (e) {
       Logger.error(`${name} failed upload`, e);
