@@ -31,10 +31,6 @@ export class AuthController {
         new Date().setSeconds(new Date().getSeconds() + 604800),
       ),
     });
-    // res.setHeader(
-    //   'Set-Cookie',
-    //   `accessToken=${tokens.accessToken}; HttpOnly; refreshToken=${tokens.refreshToken}; HttpOnly;`,
-    // );
     res.send();
   }
 

@@ -20,8 +20,7 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          const cookie = req.header('cookie');
-          console.log(cookie);
+          const cookie = req.cookies['refreshToken'];
           if (!cookie) return null;
           return cookie;
         },
