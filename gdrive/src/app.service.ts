@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
@@ -87,7 +88,20 @@ export class AppService {
   }
 
   async MyFiles(id: string) {
-    const user = await this.userRepository.findOne(id);
+    const user = await this.userRepository.findOne(id, {
+      relations: ['files'],
+    });
     return { id: user.id, files: user.files };
+  }
+
+  async deleteFile(name: string, id: string) {
+    if (!name) throw new BadRequestException();
+    const file = await this.fileRepository.findOne(
+      { name },
+      { relations: ['user'] },
+    );
+    if (!file) throw new BadRequestException();
+    else if (file.user.id !== id) throw new UnauthorizedException();
+    await this.fileRepository.delete({ name: name });
   }
 }

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -11,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from './app.service';
+import { Public } from './auth/decoraotors/public.decorator';
 import { User } from './auth/decoraotors/user.decorator';
 import { Upload } from './dto/Upload';
 
@@ -37,6 +39,7 @@ export class AppController {
     );
   }
 
+  @Public()
   @Get('/file/:name')
   findFile(@Param('name') name: string) {
     return this.appService.findFile(name);
@@ -45,5 +48,10 @@ export class AppController {
   @Get('/my')
   myFiles(@User() { id }: { id: string }) {
     return this.appService.MyFiles(id);
+  }
+
+  @Delete('/file/:name')
+  deleteFile(@Param('name') name: string, @User('id') id: string) {
+    return this.appService.deleteFile(name, id);
   }
 }
