@@ -45,7 +45,7 @@ export class AppService {
       Bucket: this.AWS_S3_BUCKET,
       Key: data.name
         ? `${data.name}.${name.split('.')[name.split('.').length - 1]}`
-        : String(name),
+        : name,
       Body: file,
       ACL: 'public-read',
       ContentType: mimetype,
@@ -58,7 +58,9 @@ export class AppService {
     try {
       const result = await this.s3.upload(params).promise();
       const newFile = this.fileRepository.create({
-        name,
+        name: data.name
+          ? `${data.name}.${name.split('.')[name.split('.').length - 1]}`
+          : name,
         url: result.Location,
         mimetype,
         user: {

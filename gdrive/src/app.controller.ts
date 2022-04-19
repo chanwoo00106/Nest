@@ -6,14 +6,11 @@ import {
   HttpCode,
   Param,
   Post,
-  Req,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Request } from 'express';
 import { AppService } from './app.service';
-import { Public } from './auth/decoraotors/public.decorator';
 import { User } from './auth/decoraotors/user.decorator';
 import { Upload } from './dto/Upload';
 
@@ -29,17 +26,15 @@ export class AppController {
     @Body() data: Upload,
     @User() user: { id: string },
   ) {
-    console.log(file);
     if (!file) throw new BadRequestException('Not Found file');
 
-    this.appService.s3_upload(
+    return this.appService.s3_upload(
       file.buffer,
       file.originalname,
       file.mimetype,
       data,
       user.id,
     );
-    return;
   }
 
   @Get('/file/:name')
@@ -47,9 +42,8 @@ export class AppController {
     return this.appService.findFile(name);
   }
 
-  @Public()
   @Get('/my')
-  myFiles(@Req() req: Request) {
-    console.log(req.cookies);
+  myFiles(@User() { id }: { id: string }) {
+    return this.appService.MyFiles(id);
   }
 }

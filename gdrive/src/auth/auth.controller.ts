@@ -29,7 +29,7 @@ export class AuthController {
       httpOnly: true,
       expires: new Date(tokens.RtExpiredAt),
     });
-    res.send({ ...tokens });
+    res.send();
   }
 
   @Post('/refresh')
