@@ -8,7 +8,7 @@ import { Users } from '../../Entities/users';
 import { InjectRepository } from '@nestjs/typeorm';
 
 type JwtPayload = {
-  sub: string;
+  id: string;
 };
 
 @Injectable()
@@ -30,7 +30,8 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload) {
-    const user = await this.userRepository.findOne(payload.sub);
+    if (!payload.id) return false;
+    const user = await this.userRepository.findOne(payload.id);
     if (!user) return false;
     return user;
   }
