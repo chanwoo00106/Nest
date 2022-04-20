@@ -10,6 +10,8 @@ RUN yarn
 
 COPY ./src ./src
 
+COPY ./.env ./
+
 RUN yarn build
 
 ENTRYPOINT [ "yarn", "start:prod" ]
