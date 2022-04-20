@@ -19,6 +19,9 @@ export class File {
   name: string;
 
   @Column()
+  VersionId: string;
+
+  @Column()
   mimetype: string;
 
   @CreateDateColumn()

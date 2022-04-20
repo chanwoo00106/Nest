@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   Logger,
   NotFoundException,
@@ -57,13 +58,14 @@ export class AppService {
     };
 
     try {
-      const result = await this.s3.upload(params).promise();
+      const result: any = await this.s3.upload(params).promise();
       const newFile = this.fileRepository.create({
         name: data.name
           ? `${data.name}.${name.split('.')[name.split('.').length - 1]}`
           : name,
         url: result.Location,
         mimetype,
+        VersionId: result.VersionId,
         user: {
           id: user,
         },
@@ -102,6 +104,27 @@ export class AppService {
     );
     if (!file) throw new BadRequestException();
     else if (file.user.id !== id) throw new UnauthorizedException();
-    await this.fileRepository.delete({ name: name });
+
+    const params = {
+      Bucket: this.AWS_S3_BUCKET,
+      Delete: {
+        Objects: [
+          {
+            Key: name,
+            VersionId: file.VersionId,
+          },
+        ],
+        Quiet: false,
+      },
+    };
+
+    try {
+      await this.s3.deleteObjects(params).promise();
+
+      await this.fileRepository.delete({ name: name });
+    } catch (e) {
+      Logger.log('failed delete');
+      throw new ConflictException('아 몰라');
+    }
   }
 }
