@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -57,6 +58,12 @@ export class AuthService {
       { refresh: bcrypt.hashSync(tokens.refreshToken, 10) },
     );
     return tokens;
+  }
+
+  async logout(id: string) {
+    if (!(await this.userRepository.findOne(id)))
+      throw new UnauthorizedException('존재하지 않는 사용자입니다.');
+    await this.userRepository.update(id, { refresh: '' });
   }
 
   private async getToken(id: string) {

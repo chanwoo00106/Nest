@@ -53,4 +53,12 @@ export class AuthController {
   async check() {
     return 'success';
   }
+
+  @Post('/logout')
+  async logout(@Res() res: Response, @User('id') id: string) {
+    await this.authService.logout(id);
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.send();
+  }
 }

@@ -8,9 +8,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
       origin: [
-        'http://gdrive.o-r.kr:3000',
         'http://gdrive.o-r.kr',
         'https://gdrive.o-r.kr',
+        'http://localhost:3000',
       ],
       credentials: true,
     },

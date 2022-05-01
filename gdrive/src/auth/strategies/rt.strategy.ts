@@ -30,7 +30,7 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
   }
 
   async validate(payload: JwtPayload) {
-    if (payload.id) return false;
+    if (!payload.id) return false;
     const user = await this.userRepository.findOne(payload.id);
     if (!user) return false;
     return { ...payload };
