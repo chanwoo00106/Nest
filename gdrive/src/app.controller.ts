@@ -7,6 +7,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -53,5 +54,11 @@ export class AppController {
   @Delete('/file/:name')
   deleteFile(@Param('name') name: string, @User('id') id: string) {
     return this.appService.deleteFile(name, id);
+  }
+
+  @Public()
+  @Get('/files')
+  async files(@Query('page') page: string) {
+    return this.appService.allFiles(page);
   }
 }

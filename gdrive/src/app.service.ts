@@ -26,7 +26,7 @@ export class AppService {
     private configService: ConfigService,
     @InjectRepository(File) private fileRepository: Repository<File>,
     @InjectRepository(Users) private userRepository: Repository<Users>,
-  ) {}
+  ) { }
 
   async s3_upload(
     file: Buffer,
@@ -122,5 +122,12 @@ export class AppService {
       Logger.log('failed delete');
       throw new ConflictException('아 몰라');
     }
+  }
+
+  async allFiles(pages: string) {
+    if (!pages) throw new BadRequestException('page가 없습니다.');
+    if (!parseInt(pages))
+      throw new BadRequestException('page는 숫자 형식입니다.');
+    return this.fileRepository.find({ skip: parseInt(pages) * 10, take: 10 });
   }
 }
