@@ -15,7 +15,7 @@ model file {
   mimetype  String   @db.VarChar(255)
   userId    String?  @db.VarChar(255)
   VersionId String   @db.VarChar(255)
-  users     users?   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b2d8e683f020f61115edea206b3")
+  users     users?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b2d8e683f020f61115edea206b3")
 
   @@index([userId], map: "FK_b2d8e683f020f61115edea206b3")
 }

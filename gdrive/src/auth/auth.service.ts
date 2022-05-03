@@ -5,65 +5,66 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from 'src/Entities/users';
-import { Repository } from 'typeorm';
 import { LoginDto, RegisterDto } from './dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private configService: ConfigService,
     private jwtService: JwtService,
-    @InjectRepository(Users) private userRepository: Repository<Users>,
+    private prismaService: PrismaService,
   ) {}
   async register(data: RegisterDto) {
     if (data.wifiPw !== this.configService.get<string>('WIFI_PASSWORD'))
       throw new ForbiddenException('Not matched wifi password');
-    else if (await this.userRepository.findOne({ id: data.id }))
+    else if (
+      await this.prismaService.users.findFirst({ where: { id: data.id } })
+    )
       throw new ForbiddenException('already exist id');
 
     const hash = await bcrypt.hash(data.password, 10);
-    const user = this.userRepository.create({
-      id: data.id,
-      password: hash,
-      files: null,
-      refresh: null,
+    await this.prismaService.users.create({
+      data: { id: data.id, password: hash, refresh: null },
     });
-    this.userRepository.save(user);
     return;
   }
 
   async login(data: LoginDto) {
-    const user = await this.userRepository.findOne({ id: data.id });
+    const user = await this.prismaService.users.findFirst({
+      where: { id: data.id },
+    });
     if (!user) throw new BadRequestException('Not Found user');
 
     if (!(await bcrypt.compare(data.password, user.password)))
       throw new ForbiddenException('Not matched password');
 
     const tokens = await this.getToken(user.id);
-    await this.userRepository.update(
-      { id: user.id },
-      { refresh: bcrypt.hashSync(tokens.refreshToken, 10) },
-    );
+    await this.prismaService.users.update({
+      where: { id: user.id },
+      data: { refresh: bcrypt.hashSync(tokens.refreshToken, 10) },
+    });
     return tokens;
   }
 
   async refresh({ id }: { id: string }) {
     const tokens = await this.getToken(id);
-    await this.userRepository.update(
-      { id: id },
-      { refresh: bcrypt.hashSync(tokens.refreshToken, 10) },
-    );
+    await this.prismaService.users.update({
+      where: { id },
+      data: { refresh: bcrypt.hashSync(tokens.refreshToken, 10) },
+    });
     return tokens;
   }
 
   async logout(id: string) {
-    if (!(await this.userRepository.findOne(id)))
+    if (!(await this.prismaService.users.findFirst({ where: { id } })))
       throw new UnauthorizedException('존재하지 않는 사용자입니다.');
-    await this.userRepository.update(id, { refresh: '' });
+    await this.prismaService.users.update({
+      where: { id },
+      data: { refresh: '' },
+    });
   }
 
   private async getToken(id: string) {
