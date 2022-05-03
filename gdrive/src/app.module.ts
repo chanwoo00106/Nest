@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Entities } from './Entities';
 import { AuthModule } from './auth/auth.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     TypeOrmModule.forFeature([...Entities]),
     AuthModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

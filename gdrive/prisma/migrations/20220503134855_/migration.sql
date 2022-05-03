@@ -1,0 +1,26 @@
+-- CreateTable
+CREATE TABLE `file` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `url` VARCHAR(255) NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `createAt` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    `mimetype` VARCHAR(255) NOT NULL,
+    `userId` VARCHAR(255) NULL,
+    `VersionId` VARCHAR(255) NOT NULL,
+
+    UNIQUE INDEX `IDX_df16ff3255e6dfc777b086949b`(`name`),
+    INDEX `FK_b2d8e683f020f61115edea206b3`(`userId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `users` (
+    `id` VARCHAR(255) NOT NULL,
+    `password` VARCHAR(255) NOT NULL,
+    `refresh` VARCHAR(255) NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `file` ADD CONSTRAINT `FK_b2d8e683f020f61115edea206b3` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
