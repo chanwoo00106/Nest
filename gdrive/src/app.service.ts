@@ -8,11 +8,8 @@ import {
 } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { File } from './Entities/files';
 import { Upload } from './dto/Upload';
-import { Users } from './Entities/users';
+import { PrismaService } from './prisma/prisma.service';
 
 @Injectable()
 export class AppService {
@@ -24,9 +21,8 @@ export class AppService {
 
   constructor(
     private configService: ConfigService,
-    @InjectRepository(File) private fileRepository: Repository<File>,
-    @InjectRepository(Users) private userRepository: Repository<Users>,
-  ) { }
+    private prismaService: PrismaService,
+  ) {}
 
   async s3_upload(
     file: Buffer,
@@ -36,8 +32,12 @@ export class AppService {
     user: string,
   ) {
     if (
-      (!data.name && (await this.fileRepository.findOne({ name: name }))) ||
-      (data.name && (await this.fileRepository.findOne({ name: data.name })))
+      (!data.name &&
+        (await this.prismaService.file.findFirst({ where: { name } }))) ||
+      (data.name &&
+        (await this.prismaService.file.findFirst({
+          where: { name: data.name },
+        })))
     )
       throw new BadRequestException('already exsit file name');
     else if (!name.includes('.'))
@@ -57,16 +57,19 @@ export class AppService {
 
     try {
       const result: any = await this.s3.upload(params).promise();
-      const newFile = this.fileRepository.create({
-        name: data.name ? data.name : name,
-        url: result.Location,
-        mimetype,
-        VersionId: result.VersionId,
-        user: {
-          id: user,
+      await this.prismaService.file.create({
+        data: {
+          name: data.name ? data.name : name,
+          url: result.Location,
+          mimetype,
+          VersionId: result.VersionId,
+          users: {
+            connect: {
+              id: user,
+            },
+          },
         },
       });
-      await this.fileRepository.save(newFile);
       Logger.log(`${name} success upload`);
     } catch (e) {
       Logger.error(`${name} failed upload`, e);
@@ -75,10 +78,10 @@ export class AppService {
   }
 
   async findFile(name: string) {
-    const file = await this.fileRepository.findOne({ name });
+    const file = await this.prismaService.file.findFirst({ where: { name } });
     const threeLater = new Date(new Date().setDate(new Date().getDate() + 3));
     if (threeLater <= new Date()) {
-      await this.fileRepository.delete({ id: file.id });
+      await this.prismaService.file.delete({ where: { id: file.id } });
       throw new NotFoundException('Not Found');
     }
     if (!file) throw new NotFoundException('Not Found');
@@ -86,20 +89,21 @@ export class AppService {
   }
 
   async MyFiles(id: string) {
-    const user = await this.userRepository.findOne(id, {
-      relations: ['files'],
+    const user = await this.prismaService.users.findFirst({
+      where: { id },
+      include: { file: true },
     });
-    return { id: user.id, files: user.files };
+    return { id: user.id, files: user.file };
   }
 
   async deleteFile(name: string, id: string) {
     if (!name) throw new BadRequestException();
-    const file = await this.fileRepository.findOne(
-      { name },
-      { relations: ['user'] },
-    );
+    const file = await this.prismaService.file.findFirst({
+      where: { name },
+      include: { users: true },
+    });
     if (!file) throw new BadRequestException();
-    else if (file.user.id !== id) throw new UnauthorizedException();
+    else if (file.users.id !== id) throw new UnauthorizedException();
 
     const params = {
       Bucket: this.AWS_S3_BUCKET,
@@ -117,7 +121,7 @@ export class AppService {
     try {
       await this.s3.deleteObjects(params).promise();
 
-      await this.fileRepository.delete({ name: name });
+      await this.prismaService.file.delete({ where: { name } });
     } catch (e) {
       Logger.log('failed delete');
       throw new ConflictException('아 몰라');
@@ -128,6 +132,10 @@ export class AppService {
     if (!pages) throw new BadRequestException('page가 없습니다.');
     if (!parseInt(pages))
       throw new BadRequestException('page는 숫자 형식입니다.');
-    return this.fileRepository.find({ skip: parseInt(pages) * 10, take: 10 });
+    return this.prismaService.file.findMany({
+      skip: parseInt(pages) * 10,
+      take: 10,
+      include: { users: true },
+    });
   }
 }
