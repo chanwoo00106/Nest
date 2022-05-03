@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model file {
+  id        Int      @id @default(autoincrement())
+  url       String   @db.VarChar(255)
+  name      String   @unique(map: "IDX_df16ff3255e6dfc777b086949b") @db.VarChar(255)
+  createAt  DateTime @default(now()) @db.DateTime(6)
+  mimetype  String   @db.VarChar(255)
+  userId    String?  @db.VarChar(255)
+  VersionId String   @db.VarChar(255)
+  users     users?   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b2d8e683f020f61115edea206b3")
+
+  @@index([userId], map: "FK_b2d8e683f020f61115edea206b3")
+}
+
+model users {
+  id       String  @id @db.VarChar(255)
+  password String  @db.VarChar(255)
+  refresh  String? @db.VarChar(255)
+  file     file[]
+}
