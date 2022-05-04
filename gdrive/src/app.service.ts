@@ -132,10 +132,11 @@ export class AppService {
     if (!pages) throw new BadRequestException('page가 없습니다.');
     if (!parseInt(pages))
       throw new BadRequestException('page는 숫자 형식입니다.');
-    return this.prismaService.file.findMany({
-      skip: parseInt(pages) * 10,
-      take: 10,
-      include: { users: true },
+    const files = await this.prismaService.file.findMany({
+      skip: 5 * parseInt(pages) - 5,
+      take: 5,
+      include: { users: { select: { id: true } } },
     });
+    return files;
   }
 }

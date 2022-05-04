@@ -9,8 +9,11 @@ COPY ./package.json yarn.lock tsconfig.json tsconfig.build.json ./
 RUN yarn
 
 COPY ./src ./src
+COPY ./prisma ./prisma
 
 COPY ./.env ./
+
+RUN npx prisma generate
 
 RUN yarn build
 
