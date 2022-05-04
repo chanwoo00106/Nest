@@ -3,9 +3,7 @@ import { Strategy, ExtractJwt } from 'passport-jwt';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
-import { Repository } from 'typeorm';
-import { Users } from '../../Entities/users';
-import { InjectRepository } from '@nestjs/typeorm';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 type JwtPayload = {
   id: string;
@@ -15,7 +13,7 @@ type JwtPayload = {
 export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     private configService: ConfigService,
-    @InjectRepository(Users) private userRepository: Repository<Users>,
+    private prismaService: PrismaService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -31,7 +29,9 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: JwtPayload) {
     if (!payload.id) return false;
-    const user = await this.userRepository.findOne(payload.id);
+    const user = await this.prismaService.users.findFirst({
+      where: { id: payload.id },
+    });
     if (!user) return false;
     return user;
   }
