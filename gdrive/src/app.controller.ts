@@ -47,8 +47,8 @@ export class AppController {
   }
 
   @Get('/my')
-  myFiles(@User() { id }: { id: string }) {
-    return this.appService.MyFiles(id);
+  myFiles(@User() { id }: { id: string }, @Query('pages') pages: string) {
+    return this.appService.MyFiles(id, pages);
   }
 
   @Delete('/file/:name')

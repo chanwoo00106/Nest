@@ -88,12 +88,19 @@ export class AppService {
     return file;
   }
 
-  async MyFiles(id: string) {
-    const user = await this.prismaService.users.findFirst({
-      where: { id },
-      include: { file: true },
+  async MyFiles(userId: string, pages: string) {
+    if (!parseInt(pages))
+      throw new BadRequestException('page는 숫자형식입니다.');
+
+    const files = await this.prismaService.file.findMany({
+      where: {
+        userId,
+      },
+      skip: 5 * parseInt(pages) - 5,
+      take: 5,
     });
-    return { id: user.id, files: user.file };
+
+    return { id: userId, files };
   }
 
   async deleteFile(name: string, id: string) {
