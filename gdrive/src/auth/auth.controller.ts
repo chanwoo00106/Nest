@@ -18,18 +18,25 @@ export class AuthController {
 
   @Public()
   @Post('/signin')
-  async login(@Body() data: LoginDto, @Res() res: Response) {
+  async login(
+    @Body() data: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const tokens = await this.authService.login(data);
 
     res.cookie('accessToken', tokens.accessToken, {
       httpOnly: true,
       expires: new Date(tokens.AtExpiredAt),
       secure: true,
+      path: '/',
+      sameSite: 'none',
     });
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       expires: new Date(tokens.RtExpiredAt),
-      secure: true
+      secure: true,
+      path: '/',
+      sameSite: 'none',
     });
     res.send();
   }
@@ -37,16 +44,25 @@ export class AuthController {
   @Post('/refresh')
   @Public()
   @UseGuards(new RtGuard())
-  async refresh(@User() data: { id: string }, @Res() res: Response) {
+  async refresh(
+    @User() data: { id: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const tokens = await this.authService.refresh(data);
 
     res.cookie('accessToken', tokens.accessToken, {
       httpOnly: true,
       expires: new Date(tokens.AtExpiredAt),
+      secure: true,
+      path: '/',
+      sameSite: 'none',
     });
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       expires: new Date(tokens.RtExpiredAt),
+      secure: true,
+      path: '/',
+      sameSite: 'none',
     });
     res.send({ ...tokens });
   }
@@ -57,7 +73,10 @@ export class AuthController {
   }
 
   @Post('/logout')
-  async logout(@Res() res: Response, @User('id') id: string) {
+  async logout(
+    @Res({ passthrough: true }) res: Response,
+    @User('id') id: string,
+  ) {
     await this.authService.logout(id);
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
