@@ -24,10 +24,12 @@ export class AuthController {
     res.cookie('accessToken', tokens.accessToken, {
       httpOnly: true,
       expires: new Date(tokens.AtExpiredAt),
+      secure: true,
     });
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       expires: new Date(tokens.RtExpiredAt),
+      secure: true
     });
     res.send();
   }

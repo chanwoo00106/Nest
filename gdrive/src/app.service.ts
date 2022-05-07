@@ -142,6 +142,7 @@ export class AppService {
     const files = await this.prismaService.file.findMany({
       skip: 5 * parseInt(pages) - 5,
       take: 5,
+      orderBy: { createAt: 'desc' },
       include: { users: { select: { id: true } } },
     });
     return files;
