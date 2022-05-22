@@ -25,8 +25,4 @@ export class AppService {
       where: { id },
     });
   }
-
-  async findByName(name: string): Promise<NamesType> {
-    return this.prisma.names.findFirst({ where: { name } });
-  }
 }

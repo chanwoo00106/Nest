@@ -6,13 +6,15 @@ import { PrismaService } from './prisma/prisma.service';
 
 describe('AppService', () => {
   let service: AppService;
+  let prisma: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PrismaModule],
-      providers: [AppService, PrismaService],
+      providers: [AppService],
     }).compile();
 
+    prisma = module.get<PrismaService>(PrismaService);
     service = module.get<AppService>(AppService);
   });
 
