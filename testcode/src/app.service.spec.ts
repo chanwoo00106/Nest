@@ -1,7 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppService } from './app.service';
-import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 
 describe('AppService', () => {
@@ -10,8 +9,8 @@ describe('AppService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule],
-      providers: [AppService],
+      imports: [],
+      providers: [AppService, PrismaService],
     }).compile();
 
     prisma = module.get<PrismaService>(PrismaService);

@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -18,9 +19,17 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', async () => {
-      const result = await appController.getHello('3');
+    it('should return 3', async () => {
+      const result = appController.test({ num: { num: 3 } });
       expect(result).toBe(3);
+    });
+
+    it('should throw BadRequest Error', async () => {
+      const result = async () => {
+        const num: any = '3';
+        return await appController.test({ num: { num } });
+      };
+      expect(result).rejects.toThrowError(new BadRequestException());
     });
   });
 });
